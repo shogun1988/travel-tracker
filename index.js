@@ -33,6 +33,7 @@ async function checkVisisted() {
   });
   return countries;
 }
+
 // GET home page
 app.get("/", async (req, res) => {
   const countries = await checkVisisted();
