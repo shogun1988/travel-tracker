@@ -6,11 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Travel Tracker</title>
   <link rel="stylesheet" href="./styles/main.css">
+  <script defer src="/scripts/autocomplete.js"></script>
 </head>
 
 <body>
   <form action="/add" method="post">
-    <input type="text" name="country" autofocus placeholder="<%= locals.error ? error :  'Enter country name'%>">
+    <input type="text" name="country" list="country-suggestions" autofocus placeholder="<%= locals.error ? error :  'Enter country name'%>">
+    <datalist id="country-suggestions"></datalist>
     <button type="submit">Add</button>
   </form>
 

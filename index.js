@@ -40,6 +40,25 @@ app.get("/", async (req, res) => {
   res.render("index.ejs", { countries: countries, total: countries.length });
 });
 
+// Country suggestions API (for autocomplete)
+app.get("/api/countries", async (req, res) => {
+  try {
+    const q = (req.query.q || "").toString().trim().toLowerCase();
+    if (!q) {
+      return res.json([]);
+    }
+    const result = await db.query(
+      "SELECT country_name FROM countries WHERE LOWER(country_name) LIKE $1 || '%' ORDER BY country_name LIMIT 10;",
+      [q]
+    );
+    const names = result.rows.map((r) => r.country_name);
+    res.json(names);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch country suggestions" });
+  }
+});
+
 //INSERT new country
 app.post("/add", async (req, res) => {
   const input = req.body["country"];
@@ -64,8 +83,8 @@ app.post("/add", async (req, res) => {
       res.render("index.ejs", {
         countries: countries,
         total: countries.length,
-        error: "Country has already been added, try again.",
-      });
+        error: "Country has already been added, try again.",        
+      });      
     }
   } catch (err) {
     console.log(err);
@@ -74,7 +93,7 @@ app.post("/add", async (req, res) => {
       countries: countries,
       total: countries.length,
       error: "Country name does not exist, try again.",
-    });
+    });    
   }
 });
 
